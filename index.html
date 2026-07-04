@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex, notranslate">
+<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="robots" content="noai, noimageai">
+<meta name="referrer" content="no-referrer">
+<title>Lefko Digital — Private Leads Dashboard</title>
+<style>
+  :root{--navy:#1F3B4D;--orange:#E8792B;--green:#1E8449;--red:#C0392B;--ink:#1a2530;--muted:#6b7a86;--line:#e3e8ec;--bg:#f4f6f8;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+  .lock{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.06)}
+  .lockbox{width:360px;padding:34px 30px;text-align:center}
+  .brand{font-weight:800;font-size:22px;color:var(--navy)}
+  .brand span{color:var(--orange)}
+  .sub{color:var(--muted);font-size:13px;margin:6px 0 22px}
+  input[type=password]{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:9px;font-size:15px;margin-bottom:12px}
+  button{background:var(--navy);color:#fff;border:0;border-radius:9px;padding:12px 16px;font-size:15px;font-weight:600;width:100%;cursor:pointer}
+  button:hover{background:#16303f}
+  .err{color:var(--red);font-size:13px;height:18px;margin-top:8px}
+  .wrap{max-width:1180px;margin:0 auto;padding:22px 18px 60px;display:none}
+  header.top{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;border-bottom:3px solid var(--orange);padding-bottom:14px;margin-bottom:18px}
+  h1{margin:0;font-size:22px;color:var(--navy)}
+  .updated{font-size:12.5px;color:var(--muted);text-align:right}
+  .tzline{font-size:11.5px;color:var(--muted);margin-top:2px}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .kpi .n{font-size:26px;font-weight:800;color:var(--navy)}
+  .kpi .l{font-size:12px;color:var(--muted);margin-top:3px}
+  .kpi.g .n{color:var(--green)} .kpi.o .n{color:var(--orange)} .kpi.r .n{color:var(--red)}
+  .sec{font-size:13px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.04em;margin:22px 0 10px}
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13px}
+  th{background:var(--navy);color:#fff;text-align:left;padding:9px 11px;font-weight:600;font-size:12px}
+  td{padding:9px 11px;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:#fafbfc}
+  .pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+  .pill.form{background:#e8f0fe;color:#1a56b0} .pill.call{background:#e7f7ee;color:#1E8449}
+  .badge{font-size:11px;font-weight:700;color:var(--green)}
+  .foot{margin-top:26px;font-size:11.5px;color:var(--muted);line-height:1.6}
+  a{color:var(--orange)}
+  .note{background:#fff8f2;border:1px solid #f6d9c2;border-radius:10px;padding:12px 14px;font-size:12.5px;color:#7a4a22;margin-bottom:18px}
+</style>
+</head>
+<body>
+  <div class="lock" id="lock">
+    <div class="card lockbox">
+      <div class="brand">Lefko<span>Digital</span></div>
+      <div class="sub">Private Leads Dashboard · Grizzly Insulation Co.</div>
+      <input type="password" id="pw" placeholder="Enter access password" autocomplete="off" autofocus>
+      <button onclick="unlock()">Unlock</button>
+      <div class="err" id="err"></div>
+    </div>
+  </div>
+
+  <div class="wrap" id="app">
+    <header class="top">
+      <div>
+        <h1>Grizzly Insulation — Leads Dashboard</h1>
+        <div class="tzline" id="tz"></div>
+      </div>
+      <div class="updated" id="updated"></div>
+    </header>
+    <div class="note" id="metanote"></div>
+    <div class="kpis" id="kpis"></div>
+    <div class="sec">All Leads (genuine — spam &amp; test entries excluded)</div>
+    <div id="leadtable"></div>
+    <div class="sec">Excluded / Filtered</div>
+    <div id="exctable"></div>
+    <div class="foot" id="foot"></div>
+  </div>
+
+<script>
+const BLOB = {"salt": "4tNtwfmODSimJvqayUSYNg==", "iv": "K5e/mUh5QR5kREbd", "ct": "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", "iter": 250000};
+function b(s){return Uint8Array.from(atob(s),c=>c.charCodeAt(0));}
+async function unlock(){
+  const pw=document.getElementById('pw').value, err=document.getElementById('err');
+  err.textContent='';
+  try{
+    const enc=new TextEncoder();
+    const km=await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveKey']);
+    const key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:b(BLOB.salt),iterations:BLOB.iter,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['decrypt']);
+    const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b(BLOB.iv)},key,b(BLOB.ct));
+    render(JSON.parse(new TextDecoder().decode(pt)));
+  }catch(e){err.textContent='Incorrect password.';}
+}
+document.getElementById('pw').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
+function esc(s){return (s==null?'':String(s)).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function render(d){
+  document.getElementById('lock').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('tz').textContent='Times shown in '+d.meta.source_timezone_label+'  ·  IST shown in brackets for team reference';
+  document.getElementById('updated').innerHTML='<b>Last updated:</b><br>'+esc(d.generated_display);
+  document.getElementById('metanote').textContent=d.meta.note;
+  const leads=d.leads, forms=leads.filter(l=>l.channel==='Form').length, calls=leads.filter(l=>l.channel==='Call').length;
+  const svc={},kw={};
+  leads.forEach(l=>{svc[l.service]=(svc[l.service]||0)+1;kw[l.keyword]=(kw[l.keyword]||0)+1;});
+  const top=o=>Object.entries(o).sort((a,b)=>b[1]-a[1])[0]||['—',0];
+  const cpl=d.spend&&leads.length?('$'+(d.spend.period_spend_usd/leads.length).toFixed(0)):'—';
+  const k=[['Total genuine leads',leads.length,''],['Form leads',forms,'g'],['Phone-call leads',calls,'o'],
+    ['Top service',top(svc)[0]+' ('+top(svc)[1]+')',''],['Top keyword',top(kw)[0],''],
+    ['Spam / test filtered',(d.excluded.form_test_entries+d.excluded.form_spam),'r'],['Cost / lead (real)',cpl,'']];
+  document.getElementById('kpis').innerHTML=k.map(x=>`<div class="kpi ${x[2]}"><div class="n">${esc(x[1])}</div><div class="l">${esc(x[0])}</div></div>`).join('');
+  let rows=leads.map(l=>`<tr><td>${esc(l.received_display)}</td><td><span class="pill ${l.channel.toLowerCase()}">${esc(l.channel)}</span></td><td><b>${esc(l.name)}</b></td><td>${esc(l.phone)}<br><span style="color:#6b7a86">${esc(l.email)}</span></td><td>${esc(l.service)}</td><td>${esc(l.keyword)}</td><td>${esc(l.landing_page||'')}</td><td><span class="badge">${esc(l.status)}</span></td></tr>`).join('');
+  document.getElementById('leadtable').innerHTML=`<table><thead><tr><th>Received (MT / IST)</th><th>Type</th><th>Name</th><th>Contact</th><th>Service</th><th>Keyword</th><th>Landing page</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table>`;
+  document.getElementById('exctable').innerHTML=`<table><thead><tr><th>Category</th><th>Count</th><th>Note</th></tr></thead><tbody><tr><td>Form test/QA entries</td><td>${d.excluded.form_test_entries}</td><td>test@test.com placeholder submissions</td></tr><tr><td>Form spam</td><td>${d.excluded.form_spam}</td><td>Caught by Gravity spam filter</td></tr></tbody></table>`;
+  document.getElementById('foot').innerHTML='Ad spend (period): <b>$'+d.spend.period_spend_usd.toLocaleString()+'</b> · Google Ads reported conversions: <b>'+d.spend.reported_conversions+'</b><br>'+esc(d.spend.note)+'<br><br>Account '+esc(d.meta.ads_account_id)+' · Data is AES-256 encrypted at rest in this page · noindex/noai enabled.';
+}
+</script>
+</body>
+</html>
