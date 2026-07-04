@@ -1,0 +1,24 @@
+{
+  "meta": {
+    "account": "Grizzly Insulation Co.",
+    "ads_account_id": "403-750-9921",
+    "source_timezone": "America/Denver",
+    "source_timezone_label": "Mountain Time (GMT-06:00)",
+    "display_timezone_secondary": "Asia/Kolkata",
+    "note": "",
+    "last_fetch_utc": "2026-07-04T14:51:23.166094+00:00",
+    "fetch_notes": [
+      "CTM API keys not set"
+    ]
+  },
+  "spend": {
+    "period_spend_usd": 8590.45,
+    "reported_conversions": 8,
+    "note": "Google Ads Jun 3-Jul 2 2026 (static until Ads API added)."
+  },
+  "excluded": {
+    "form_test_entries": 22,
+    "form_spam": 0
+  },
+  "leads": []
+}
