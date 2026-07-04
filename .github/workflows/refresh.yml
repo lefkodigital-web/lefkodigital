@@ -1,0 +1,36 @@
+name: Refresh Leads Dashboard
+on:
+  schedule:
+    - cron: '0 */8 * * *'   # every 8 hours (00:00, 08:00, 16:00 UTC)
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install cryptography
+      - name: Fetch leads from APIs
+        env:
+          GF_BASE_URL: ${{ secrets.GF_BASE_URL }}
+          GF_CONSUMER_KEY: ${{ secrets.GF_CONSUMER_KEY }}
+          GF_CONSUMER_SECRET: ${{ secrets.GF_CONSUMER_SECRET }}
+          GF_FORM_IDS: ${{ secrets.GF_FORM_IDS }}
+          CTM_ACCOUNT_ID: ${{ secrets.CTM_ACCOUNT_ID }}
+          CTM_API_KEY: ${{ secrets.CTM_API_KEY }}
+          CTM_API_SECRET: ${{ secrets.CTM_API_SECRET }}
+        run: python fetch_leads.py
+      - name: Build encrypted dashboard
+        env:
+          DASH_PASSWORD: ${{ secrets.DASH_PASSWORD }}
+        run: python generate_dashboard.py
+      - name: Commit updated dashboard
+        run: |
+          git config user.name "lefko-bot"
+          git config user.email "bot@lefkodigital.local"
+          git add -A
+          git diff --quiet --cached || git commit -m "Auto-refresh leads $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push
