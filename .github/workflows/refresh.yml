@@ -31,6 +31,7 @@ jobs:
         run: |
           git config user.name "lefko-bot"
           git config user.email "bot@lefkodigital.local"
-          git add -A
+          git rm --cached leads.json 2>/dev/null || true
+          git add index.html
           git diff --quiet --cached || git commit -m "Auto-refresh leads $(date -u +%Y-%m-%dT%H:%MZ)"
           git push
