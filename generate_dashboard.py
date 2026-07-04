@@ -17,6 +17,9 @@ if not os.path.exists(LEADS_PATH):
     print("No leads.json present (APIs not yet connected) - keeping existing index.html unchanged.")
     raise SystemExit(0)
 DATA = json.load(open(LEADS_PATH))
+if not DATA.get("leads"):
+    print("leads.json has 0 leads (fetch returned nothing) - keeping existing index.html unchanged.")
+    raise SystemExit(0)
 PW = os.environ.get("DASH_PASSWORD", "ChangeMe-Grizzly2026").encode()
 ITER = 250000
 MT = ZoneInfo("America/Denver"); IST = ZoneInfo("Asia/Kolkata")
