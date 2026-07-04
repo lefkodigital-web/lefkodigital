@@ -90,6 +90,7 @@ def fetch_gravity():
             notes.append(f"form {fid}: {ex}"); continue
         ents = data.get("entries", []) if isinstance(data, dict) else []
         print(f"  form {fid}: roles={roles} total_count={data.get('total_count') if isinstance(data,dict) else '?'} entries={len(ents)}")
+        print(f"  form {fid} RAW form={json.dumps(form)[:250]} | entriesResp={json.dumps(data)[:250]}")
         for e in ents:
             name = get_val(e, roles.get("name")) or "(no name)"
             email = get_val(e, roles.get("email")); phone = get_val(e, roles.get("phone"))
