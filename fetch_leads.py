@@ -19,7 +19,9 @@ LOOKBACK = int(os.environ.get("LOOKBACK_DAYS", "30"))
 ROOT = os.path.dirname(os.path.abspath(__file__))
 TEST_MARKERS = ("test@test.com", "test test", "1234567", "asdf", "example.com", "qwerty")
 
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36"
 def _get(url, headers):
+    headers = {**headers, "User-Agent": UA, "Accept": "application/json"}
     req = urllib.request.Request(url, headers=headers)
     try:
         with urllib.request.urlopen(req, timeout=45) as r:
