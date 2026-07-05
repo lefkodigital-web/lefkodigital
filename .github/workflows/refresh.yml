@@ -1,10 +1,6 @@
 name: Refresh Leads Dashboard
 on:
-  schedule:
-    - cron: '0 */8 * * *'   # every 8 hours (00:00, 08:00, 16:00 UTC)
-  workflow_dispatch: {}
-  push:
-    branches: [main]
+  workflow_dispatch: {}   # manual only — auto-refresh paused while calls are merged via browser scrape (see README)
 permissions:
   contents: write
 jobs:
